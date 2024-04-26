@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, APIRouter, status
+from fastapi import Depends, HTTPException, APIRouter, status, Path
 from engine import get_db, models, schemas
 from engine.schemas import UserData, User, UserCreate, UserLogin
 from auth import user_dependency, oauth2
@@ -18,6 +18,16 @@ user_dependency = Annotated[TokenData, Depends(current_user)]
 @user.post("/signup/", response_model=User)
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
     """ Create and Returns new user """
+
+    existing_user = db.query(models.User).filter(
+        (models.User.username == user.username) | (
+            models.User.email == user.email)
+    ).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail="A user with this username or email already exists."
+        )
 
     new_user = models.User(username=user.username, email=user.email,
                            password=get_password_hash(user.password))
@@ -62,3 +72,28 @@ async def read_users(current_user: user_dependency,
     if not users_data:
         raise HTTPException(status_code=404, detail="No users found")
     return [schemas.UserData.from_orm(user) for user in users_data]
+
+
+@user.delete("/users/{user_id}")
+async def delete_user(current_user: user_dependency,
+                      user_id: str = Path(...,
+                                          description="The ID of the"
+                                          " User to delete"),
+                      db: Session = Depends(get_db)):
+    """ Delete a user account """
+    user_to_delete = db.query(models.User).filter(
+        models.User.id == user_id).first()
+    if user_to_delete is None:
+        raise HTTPException(status_code=404, detail="User doesn't exist")
+    if user_to_delete.id != current_user.id:
+        raise HTTPException(
+            status_code=404, detail="You can't delete another user's account")
+
+    try:
+        db.delete(user_to_delete)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": f"User {user_to_delete.id} deleted successfully"}

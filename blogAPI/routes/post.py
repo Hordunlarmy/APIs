@@ -12,16 +12,14 @@ post = APIRouter()
 
 @post.post("/posts/", response_model=Post)
 async def create_post(current_user: user_dependency, post: PostCreate,
-                      user_id: str = Path(...,
-                                          description="The ID of the"
-                                          " user posting"),
                       db: Session = Depends(get_db)):
     """ route to create validated posts """
 
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+    user = db.query(models.User).filter(
+        models.User.id == current_user.id).first()
     if user:
         new_post = models.Post(
-            user_id=user.id, title=post.title, content=post.content)
+            user_id=current_user.id, title=post.title, content=post.content)
     else:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -48,7 +46,7 @@ async def read_posts(current_user: user_dependency,
     return [schemas.Post.from_orm(post) for post in posts]
 
 
-@post.get("/posts/{id}", response_model=Post)
+@post.get("/posts/{post_id}", response_model=Post)
 async def read_post(current_user: user_dependency,
                     post_id: str = Path(...,
                                         description="The ID of the post"
@@ -62,7 +60,7 @@ async def read_post(current_user: user_dependency,
     return post
 
 
-@post.put("/posts/{id}", response_model=Post)
+@post.put("/posts/{post_id}", response_model=Post)
 async def update_post(current_user: user_dependency, post: PostCreate,
                       post_id: str = Path(...,
                                           description="The ID of the post"
@@ -72,10 +70,14 @@ async def update_post(current_user: user_dependency, post: PostCreate,
 
     post_to_update = db.query(models.Post).filter(
         models.Post.id == post_id).first()
+
     if not post_to_update:
         raise HTTPException(status_code=404, detail="post doesnt exist")
 
-    post_to_update.title = post.title
+    if post_to_update.user_id != current_user.id:
+        raise HTTPException(
+            status_code=404, detail="You cant update another user's post")
+        post_to_update.title = post.title
     post_to_update.content = post.content
     post_to_update.date_posted = datetime.utcnow()
 
@@ -90,7 +92,7 @@ async def update_post(current_user: user_dependency, post: PostCreate,
     return post_to_update
 
 
-@post.delete("/posts/{id}")
+@post.delete("/posts/{post_id}")
 async def delete_post(current_user: user_dependency,
                       post_id: str = Path(...,
                                           description="The ID of the post"
@@ -104,6 +106,10 @@ async def delete_post(current_user: user_dependency,
     if post_to_delete is None:
         raise HTTPException(status_code=404, detail="Post doesnt exist")
     deleted_id = post_to_delete.id
+
+    if post_to_delete.user_id != current_user.id:
+        raise HTTPException(
+            status_code=404, detail="You cant delete another user's post")
 
     try:
         db.delete(post_to_delete)

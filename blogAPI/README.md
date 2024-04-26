@@ -3,6 +3,8 @@
 # Blogging Platform API
 This is a blogging platform API developed using FastAPI and SQLAlchemy. It supports creating, reading, updating, and deleting blog posts . Additionally, users can comment on posts, and there is functionality to search posts based on titles or content.
 
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23%26entityType%3Dcollection%26workspaceId%3D1ee2ff56-2d76-4ee0-a80b-a43ca188ff1b)
+
 ### Features
 * **User Management**: Create, read, update, and delete users.
 * **Post Management**: Create, read, update, and delete blog posts.
@@ -26,7 +28,7 @@ This is a blogging platform API developed using FastAPI and SQLAlchemy. It suppo
 - Clone the repository
 ```
 git clone https://github.com/Hordunlarmy/Skillsforge
-cd blogging-platform-api
+cd Skillsforge/section-2_blogAPI
 ```
 - Set up a virtual environment (optional but recommended)
 ```
@@ -74,6 +76,9 @@ The application is structured around MVC architecture, where:
 
 ### Search Logic
 The search functionality leverages the SQL LIKE statement to find matches in post titles and contents. It is case-insensitive and matches any part of the text.
+
+### Authentication Logic
+A user account needs to be created and used to authorize protected routes
 
 ### Comment Handling
 Comments are linked to both users and posts through foreign keys in the database. When a comment is made, it's stored with references to both the post it belongs to and the user who made it.
