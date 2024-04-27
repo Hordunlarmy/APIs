@@ -1,8 +1,13 @@
 import uvicorn
+import routes
 from fastapi import FastAPI
+from engine import create_db
 
 app = FastAPI()
+create_db()
 
+app.include_router(routes.main)
+app.include_router(routes.log_book)
 
 if __name__ == "__main__":
-    run.uvicorn("main:app", reload="True")
+    uvicorn.run("main:app", reload="True")

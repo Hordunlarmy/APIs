@@ -4,7 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from decouple import config
 
-SQLALCHEMY_DATABASE_URL = config("database", default="sqlite:///./logs.db")
+SQLALCHEMY_DATABASE_URL = config(
+    "database", default="sqlite:///./engine/logs.db")
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

@@ -15,6 +15,14 @@ class Student(Base):
     last_name = Column(String(20), nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     password = Column(String(60), nullable=False)
+    school = relationship("School", backref=backref(
+        "students", lazy='joined'), cascade="all, delete-orphan")
+    department = relationship("Department", backref=backref(
+        "students", lazy='joined'), cascade="all, delete-orphan")
+    company = relationship("Company", backref=backref(
+        "interns", lazy='joined'), cascade="all, delete-orphan")
+    supervisor = relationship("Supervisor", backref=backref(
+        "interns", lazy='joined'), cascade="all, delete-orphan")
     logs = relationship("LogBook", backref=backref(
         "student", lazy='joined'), cascade="all, delete-orphan")
 
@@ -41,7 +49,7 @@ class Department(Base):
     school_id = Column(String(36), ForeignKey('school.id'), nullable=False)
 
     def __repr__(self):
-        return f"Department('{name}')"
+        return f"Department('{self.name}')"
 
 
 class Company(Base):
@@ -51,7 +59,7 @@ class Company(Base):
     name = Column(String(120), nullable=False)
 
     def __repr__(self):
-        return f"Company('{name}')"
+        return f"Company('{self.name}')"
 
 
 class Supervisor(Base):
