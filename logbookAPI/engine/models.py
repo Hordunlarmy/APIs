@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import (Column, String, Text, DateTime,
-                        ForeignKey, Integer, func)
+                        ForeignKey, Integer, func, Enum)
 from sqlalchemy.orm import relationship, backref
 from datetime import datetime
 from engine import Base
@@ -10,21 +10,18 @@ class Student(Base):
     __tablename__ = "student"
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
-    matric_no = Column(Integer, unique=True, nullable=False)
+    matric_no = Column(String(20), unique=True, nullable=False)
     first_name = Column(String(20), nullable=False)
     last_name = Column(String(20), nullable=False)
     email = Column(String(120), unique=True, nullable=False)
-    password = Column(String(60), nullable=False)
-    school = relationship("School", backref=backref(
-        "students", lazy='joined'), cascade="all, delete-orphan")
-    department = relationship("Department", backref=backref(
-        "students", lazy='joined'), cascade="all, delete-orphan")
-    company = relationship("Company", backref=backref(
-        "interns", lazy='joined'), cascade="all, delete-orphan")
-    supervisor = relationship("Supervisor", backref=backref(
-        "interns", lazy='joined'), cascade="all, delete-orphan")
-    logs = relationship("LogBook", backref=backref(
-        "student", lazy='joined'), cascade="all, delete-orphan")
+    school_id = Column(String(36), ForeignKey('school.id'))
+    school = relationship("School", backref="students")
+    department_id = Column(String(36), ForeignKey('department.id'))
+    department = relationship("Department", backref="students")
+    company_id = Column(String(36), ForeignKey('company.id'))
+    company = relationship("Company", backref="students")
+    supervisor_id = Column(String(36), ForeignKey('supervisor.id'))
+    supervisor = relationship("Supervisor", backref="students")
 
     def __repr__(self):
         return f"Student('{self.first_name} {self.last_name}', '{self.email}')"
@@ -34,7 +31,7 @@ class School(Base):
     __tablename__ = "school"
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
-    name = Column(String(120), nullable=False)
+    name = Column(String(120), unique=True, nullable=False)
     location = Column(String(120), nullable=False)
 
     def __repr__(self):
@@ -47,6 +44,7 @@ class Department(Base):
                 default=lambda: str(uuid.uuid4()))
     name = Column(String(120), nullable=False)
     school_id = Column(String(36), ForeignKey('school.id'), nullable=False)
+    school = relationship("School", backref="departments")
 
     def __repr__(self):
         return f"Department('{self.name}')"
@@ -66,11 +64,10 @@ class Supervisor(Base):
     __tablename__ = "supervisor"
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
-    full_name = Column(String(50), nullable=False)
-    email = Column(String(120), unique=True, nullable=False)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
     company_id = Column(String(36), ForeignKey('company.id'), nullable=False)
-    company = relationship("Company", backref=backref(
-        "supervisors", lazy='dynamic'))
+    company = relationship("Company", backref="supervisors")
 
     def __repr__(self):
         return f"Supervisor('{self.full_name}', '{self.email}')"
@@ -80,14 +77,14 @@ class LogBook(Base):
     __tablename__ = "logbook"
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
-    work_description = Column(String(100), nullable=False)
-    work_status = Column(Text, nullable=False)
-    date_posted = Column(DateTime, default=func.now())
     student_id = Column(String(36), ForeignKey(
         'student.id', ondelete='CASCADE'), nullable=False)
-    supervisor_id = Column(String(36), ForeignKey(
-        'supervisor.id'), nullable=False)
-    supervisor = relationship("Supervisor", backref="logbooks")
+    work_description = Column(Text)
+    work_status = Column(Enum("Completed", "In Progress",
+                              "Not Started", name="work_status_enum"),
+                         nullable=False)
+    date_posted = Column(DateTime, default=func.now())
+    student = relationship("Student", backref="logbooks")
 
     def __repr__(self):
         return f"LogBook('{self.work_description}', '{self.date_posted}')"
