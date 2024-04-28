@@ -1,13 +1,23 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse
+from sqlalchemy.orm import Session
+from engine import get_db, models
 from sqlalchemy.orm import Session
 
 main = APIRouter()
 
 
 @main.get("/", response_class=HTMLResponse)
-async def home():
+async def home(db: Session = Depends(get_db)):
     """ Returns an html content """
+
+    student = db.query(models.Student).all()
+    supervisor = db.query(models.Supervisor).all()
+    for student in student:
+        print(student.supervisor)
+    for sup in supervisor:
+        print(sup.id)
+        print(sup.first_name)
 
     return """
     <!DOCTYPE html>

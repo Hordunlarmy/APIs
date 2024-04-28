@@ -66,11 +66,13 @@ class Supervisor(Base):
                 default=lambda: str(uuid.uuid4()))
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
     company_id = Column(String(36), ForeignKey('company.id'), nullable=False)
     company = relationship("Company", backref="supervisors")
 
     def __repr__(self):
-        return f"Supervisor('{self.full_name}', '{self.email}')"
+        return (
+            f"Supervisor('{self.first_name}', '{self.last_name}')")
 
 
 class LogBook(Base):

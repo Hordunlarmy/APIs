@@ -7,7 +7,7 @@ app = FastAPI()
 create_db()
 
 app.include_router(routes.main)
-app.include_router(routes.log_book)
+app.include_router(routes.book)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload="True")

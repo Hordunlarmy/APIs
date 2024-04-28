@@ -1,2 +1,3 @@
 from .index import main
-from .log import log_book
+from .book import book
+from .log import log

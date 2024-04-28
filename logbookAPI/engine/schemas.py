@@ -1,8 +1,8 @@
 from pydantic import BaseModel, validator, EmailStr
 
 
-class CreateLogBook(BaseModel):
-    matric_no: int
+class CreateBook(BaseModel):
+    matric_no: str
     first_name: str
     last_name: str
     email: EmailStr
@@ -12,3 +12,10 @@ class CreateLogBook(BaseModel):
     company: str
     supervisors_first_name: str
     supervisors_last_name: str
+    supervisors_email: EmailStr
+
+
+class CreateLog(BaseModel):
+    student_id: str
+    work_description: str
+    works_status: str
