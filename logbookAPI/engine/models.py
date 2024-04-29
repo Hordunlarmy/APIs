@@ -1,6 +1,8 @@
 import uuid
 from sqlalchemy import (Column, String, Text, DateTime,
-                        ForeignKey, Integer, func, Enum)
+                        ForeignKey, Integer, func)
+from sqlalchemy.types import Enum
+from .schemas import WorkStatus
 from sqlalchemy.orm import relationship, backref
 from datetime import datetime
 from engine import Base
@@ -82,10 +84,11 @@ class LogBook(Base):
     student_id = Column(String(36), ForeignKey(
         'student.id', ondelete='CASCADE'), nullable=False)
     work_description = Column(Text)
-    work_status = Column(Enum("Completed", "In Progress",
-                              "Not Started", name="work_status_enum"),
+    work_status = Column(Enum(WorkStatus,
+                              values_callable=lambda obj: [
+                                  e.value for e in obj]),
                          nullable=False)
-    date_posted = Column(DateTime, default=func.now())
+    entry_date = Column(DateTime, default=func.current_date())
     student = relationship("Student", backref="logbooks")
 
     def __repr__(self):

@@ -8,6 +8,7 @@ create_db()
 
 app.include_router(routes.main)
 app.include_router(routes.book)
+app.include_router(routes.log)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload="True")
