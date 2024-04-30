@@ -29,7 +29,7 @@ The SIWES (Students Industrial Work Experience Scheme) API provides a platform f
 - Clone the repository
 ```
 git clone https://github.com/Hordunlarmy/APIs
-cd APIs/logbookAPI
+cd APIs/siwesAPI
 ```
 - Set up a virtual environment (optional but recommended)
 ```
