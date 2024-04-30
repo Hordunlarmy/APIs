@@ -9,6 +9,8 @@ The SIWES (Students Industrial Work Experience Scheme) API provides a platform f
 * **Department Management**: Handle departmental information within schools.
 * **Company Management**: Manage company profiles linked to student internships.
 * **Logbook Management**: Students can create, retrieve, update, and delete entries in their logbooks based on their daily activities.
+* **Date Restrictions**: Students can only fill the logbook for today and future dates.
+* **Overwrite Existing Entries**: If a student fills the logbook for a date already filled, the API overwrites the existing entry with the new data.
 * **Search/Filter Functionality**: Search for logs by based on date range and/or work status
 
 ### Technology Stack

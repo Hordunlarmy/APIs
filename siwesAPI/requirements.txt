@@ -3,6 +3,4 @@ fastapi
 sqlalchemy
 python-decouple
 pydantic[email]
-python-jose[cryptography]
-passlib[bcrypt]
 python-multipart
