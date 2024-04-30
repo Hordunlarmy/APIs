@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import (Column, String, Text, DateTime,
+from sqlalchemy import (Column, String, Text, Date,
                         ForeignKey, Integer, func)
 from sqlalchemy.types import Enum
 from .schemas import WorkStatus
@@ -88,7 +88,7 @@ class LogBook(Base):
                               values_callable=lambda obj: [
                                   e.value for e in obj]),
                          nullable=False)
-    entry_date = Column(DateTime, default=func.current_date())
+    entry_date = Column(Date, default=func.current_date())
     student = relationship("Student", backref="logbooks")
 
     def __repr__(self):

@@ -75,7 +75,6 @@ async def get_all_books(db: Session = Depends(get_db)):
     """ Get A List Of All Student LogBooks """
 
     students = db.query(models.Student).all()
-    print(students)
     if not students:
         raise HTTPException(status_code=404, detail="LogBook Not Found")
     results = []

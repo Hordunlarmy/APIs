@@ -45,12 +45,25 @@ class WorkStatus(Enum):
 
 
 class CreateLog(BaseModel):
-    student_id: str
     work_description: str
     work_status: WorkStatus
     entry_date: Optional[date] = None
 
     class Config:
+        from_attributes = True
+        json_encoders = {
+            date: lambda v: v.isoformat()
+        }
+
+
+class ReturnLog(BaseModel):
+    id: str
+    work_description: str
+    work_status: WorkStatus
+    entry_date: Optional[date] = None
+
+    class Config:
+        from_attributes = True
         json_encoders = {
             date: lambda v: v.isoformat()
         }
