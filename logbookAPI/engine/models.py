@@ -17,13 +17,17 @@ class Student(Base):
     last_name = Column(String(20), nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     school_id = Column(String(36), ForeignKey('school.id'))
-    school = relationship("School", backref="students")
+    school = relationship("School", backref=backref(
+        "students", cascade="all, delete-orphan"))
     department_id = Column(String(36), ForeignKey('department.id'))
-    department = relationship("Department", backref="students")
+    department = relationship("Department", backref=backref(
+        "students", cascade="all, delete-orphan"))
     company_id = Column(String(36), ForeignKey('company.id'))
-    company = relationship("Company", backref="students")
+    company = relationship("Company", backref=backref(
+        "students", cascade="all, delete-orphan"))
     supervisor_id = Column(String(36), ForeignKey('supervisor.id'))
-    supervisor = relationship("Supervisor", backref="students")
+    supervisor = relationship("Supervisor", backref=backref(
+        "students", cascade="all, delete-orphan"))
 
     def __repr__(self):
         return f"Student('{self.first_name} {self.last_name}', '{self.email}')"
@@ -33,7 +37,7 @@ class School(Base):
     __tablename__ = "school"
     id = Column(String(36), primary_key=True,
                 default=lambda: str(uuid.uuid4()))
-    name = Column(String(120), unique=True, nullable=False)
+    name = Column(String(120), nullable=False)
     location = Column(String(120), nullable=False)
 
     def __repr__(self):
@@ -89,7 +93,8 @@ class LogBook(Base):
                                   e.value for e in obj]),
                          nullable=False)
     entry_date = Column(Date, default=func.current_date())
-    student = relationship("Student", backref="logbooks")
+    student = relationship("Student", backref=backref(
+        "logbooks", cascade="all, delete-orphan"))
 
     def __repr__(self):
         return f"LogBook('{self.work_description}', '{self.date_posted}')"

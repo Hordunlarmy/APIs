@@ -10,7 +10,7 @@ from typing import List
 log = APIRouter()
 
 
-@log.post("/logs/{student_id}", response_model=CreateLog)
+@log.post("/logs/{student_id}/", response_model=CreateLog)
 async def create_log(log: CreateLog, student_id: str = Path(...),
                      db: Session = Depends(get_db)):
     """ Create or update log entries only for today or future dates. """
@@ -54,7 +54,7 @@ async def create_log(log: CreateLog, student_id: str = Path(...),
     return existing_log if existing_log else new_log
 
 
-@log.get("/logs/{student_id}", response_model=List[ReturnLog])
+@log.get("/logs/{student_id}/", response_model=List[ReturnLog])
 async def get_student_logs(student_id: str = Path(...),
                            db: Session = Depends(get_db)):
     """ Retrive All Logs By A Student """
@@ -67,7 +67,7 @@ async def get_student_logs(student_id: str = Path(...),
     return [ReturnLog.from_orm(log) for log in student_logs]
 
 
-@log.get("/log/{log_date}", response_model=ReturnLog)
+@log.get("/log/{log_date}/", response_model=ReturnLog)
 async def get_by_date(log_date: date = Path(...),
                       db: Session = Depends(get_db)):
     """ Retrive A Log By Date """
@@ -81,7 +81,7 @@ async def get_by_date(log_date: date = Path(...),
     return log
 
 
-@log.put("/logs/{log_id}", response_model=CreateLog)
+@log.put("/logs/{log_id}/", response_model=CreateLog)
 async def update_log(log: CreateLog, log_id: str = Path(...),
                      db: Session = Depends(get_db)):
     """ Update A Log Entry"""
@@ -122,7 +122,7 @@ async def update_log(log: CreateLog, log_id: str = Path(...),
     return log_to_update
 
 
-@log.delete("/logs/{log_id}")
+@log.delete("/logs/{log_id}/")
 async def delete_log(log_id: str = Path(...),
                      db: Session = Depends(get_db)):
     """ Delete A Log Entry"""

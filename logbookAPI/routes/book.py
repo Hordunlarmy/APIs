@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from fastapi.responses import JSONResponse
 from engine import get_db
 from sqlalchemy.orm import Session
@@ -60,7 +60,6 @@ async def create_a_book(student: CreateBook, db: Session = Depends(get_db)):
             supervisor=supervisor)
         db.add(new_student)
 
-        # Commit all changes
         db.commit()
 
         return student
@@ -76,7 +75,7 @@ async def get_all_books(db: Session = Depends(get_db)):
 
     students = db.query(models.Student).all()
     if not students:
-        raise HTTPException(status_code=404, detail="LogBook Not Found")
+        raise HTTPException(status_code=404, detail="No Log Book Found")
     results = []
     for student in students:
         student_data = {
@@ -91,4 +90,48 @@ async def get_all_books(db: Session = Depends(get_db)):
             "logs": student.logbooks
         }
         results.append(student_data)
+    return results
+
+
+@book.get("/book/{matric_no}/", response_class=JSONResponse)
+async def get_by_matric(matric_no: str = Path(...),
+                        db: Session = Depends(get_db)):
+    """Get A Students LogBook By Matric_no"""
+
+    students_log = db.query(models.Student).filter(
+        models.Student.matric_no == matric_no).all()
+    if not students_log:
+        raise HTTPException(status_code=404, detail="LogBook Not Found")
+    results = []
+    for student in students_log:
+        student_data = {
+            "student_id": student.id,
+            "school_id": student.school_id,
+            "department_id": student.department_id,
+            "company_id": student.company_id,
+            "supervisor_id": student.supervisor_id,
+            "matric_no": student.matric_no,
+            "student_name": student.last_name + " " + student.first_name,
+            "email": student.email,
+            "logs": student.logbooks
+        }
+        results.append(student_data)
         return results
+
+
+@book.delete("/books/{student_id}/")
+async def delete_book(student_id: str = Path(...),
+                      db: Session = Depends(get_db)):
+    """ Delete A Log Book"""
+
+    log_book = db.query(models.Student).filter(
+        models.Student.id == student_id).first()
+    if not log_book:
+        raise HTTPException(status_code=404, detail="Log Book Not Found")
+    try:
+        db.delete(log_book)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"detail": "LogBook Deleted Successfully"}
