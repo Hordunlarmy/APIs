@@ -82,3 +82,15 @@ A user account needs to be created and used to authorize protected routes
 
 ### Comment Handling
 Comments are linked to both users and posts through foreign keys in the database. When a comment is made, it's stored with references to both the post it belongs to and the user who made it.
+
+## Running with Docker
+To run this project using Docker, follow these steps:
+
+1. Build the image:
+```
+docker build -t blogAPI .
+```
+2. Run the container:
+```
+docker run -p 8000:8000 blogAPI
+```
