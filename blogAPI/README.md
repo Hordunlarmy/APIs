@@ -88,9 +88,9 @@ To run this project using Docker, follow these steps:
 
 1. Build the image:
 ```
-docker build -t blogAPI .
+docker build -t blog-api .
 ```
 2. Run the container:
 ```
-docker run -p 8000:8000 blogAPI
+docker run -p 8000:8000 blog-api
 ```
