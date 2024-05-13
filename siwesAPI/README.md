@@ -58,3 +58,6 @@ The application is structured around MVC architecture, where:
 
 ### Documentation
 For full documentation, visit http://localhost:8000/docs after starting the server. This will provide access to an interactive Swagger UI where you can test all API endpoints.
+
+## Running with Docker
+To run this project using Docker, run `docker-compose up --build`
