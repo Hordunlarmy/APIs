@@ -85,3 +85,6 @@ Comments are linked to both users and posts through foreign keys in the database
 
 ## Running with Docker
 To run this project using Docker, run `docker-compose up --build`
+
+### Testing
+run `python3 -m unittest discover tests` in the projects root directory
