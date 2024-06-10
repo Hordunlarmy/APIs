@@ -10,4 +10,4 @@ Welcome to my RESTful API repository! Here you'll find a collection of specializ
 | Project | Descripton |
 | ------- | ---------- |
 | [`blogAPI`](./blogAPI/) | **A Blogging Platform** that allows developers to programmatically create, retrieve, update, and delete blog posts, manage comments, and categorize content with ease |
-| [`siwesAPI`](./siwesAPI/) | **A SIWES LOGBOOK API** designed to streamline the management and documentation of industrial training experiences for students, companys, supervisors, and institutions. This API offers a comprehensive suite of functions that enable users to effortlessly create, update, and retrieve entries in a SIWES (Student Industrial Work Experience Scheme) logbook |
+| [`siwesAPI`](./siwesAPI/) | **A SIWES LOGBOOK API** designed to streamline the management and documentation of industrial training experiences for students, companys, supervisors, and institutions. This API offers a comprehensive suite of functions that enable users to effortlessly create, update, and retrieve entries in a SIWES (Student Industrial Work Experience Scheme) logbook.. |
