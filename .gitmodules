@@ -1,0 +1,3 @@
+[submodule "libraryAPI"]
+	path = libraryAPI
+	url = https://github.com/Hordunlarmy/libraryAPI
